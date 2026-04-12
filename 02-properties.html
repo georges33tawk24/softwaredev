@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Properties - Rentora</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Roboto', sans-serif; background: #fafafa; }
+        
+        /* Navigation */
+        .navbar {
+            background: #1976d2;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .navbar-brand {
+            font-size: 20px;
+            font-weight: 700;
+            margin-right: auto;
+            cursor: pointer;
+        }
+        .navbar-nav {
+            display: flex;
+            gap: 8px;
+        }
+        .nav-button {
+            background: none;
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-radius: 4px;
+            transition: background 0.2s;
+            font-size: 14px;
+            font-weight: 500;
+            text-transform: capitalize;
+        }
+        .nav-button:hover {
+            background: rgba(255,255,255,0.08);
+        }
+        
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+        
+        /* Page Header */
+        .page-header {
+            margin-bottom: 32px;
+        }
+        .page-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #212121;
+            margin-bottom: 8px;
+        }
+        .page-subtitle {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        /* Search/Filters Section */
+        .filters-section {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .form-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        .form-input {
+            padding: 12px 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 16px;
+            font-family: 'Roboto', sans-serif;
+            background: #fafafa;
+            transition: border-color 0.2s;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: #1976d2;
+            background: white;
+        }
+        .form-select {
+            padding: 12px 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 16px;
+            font-family: 'Roboto', sans-serif;
+            background: #fafafa;
+            cursor: pointer;
+        }
+        .search-btn {
+            background: #1976d2;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .search-btn:hover {
+            background: #1565c0;
+        }
+        
+        /* Properties Grid */
+        .properties-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        .property-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        .property-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
+        .property-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1976d2;
+        }
+        .property-content {
+            padding: 16px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .property-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #212121;
+            line-height: 1.3;
+        }
+        .property-location {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+        .property-guests {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+        .property-rating {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        .property-price {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1976d2;
+            margin-bottom: 12px;
+        }
+        .property-actions {
+            margin-top: auto;
+        }
+        .view-details-btn {
+            width: 100%;
+            background: #1976d2;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .view-details-btn:hover {
+            background: #1565c0;
+        }
+        
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 32px;
+        }
+        .pagination-btn {
+            background: white;
+            border: 1px solid #e0e0e0;
+            padding: 8px 16px;
+            margin: 0 4px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #666;
+        }
+        .pagination-btn:hover {
+            background: #f5f5f5;
+        }
+        .pagination-btn.active {
+            background: #1976d2;
+            color: white;
+            border-color: #1976d2;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar-nav {
+                display: none;
+            }
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+            .properties-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-brand">Rentora</div>
+        <div class="navbar-nav">
+            <button class="nav-button">
+                <i class="material-icons">home</i>
+                Home
+            </button>
+            <button class="nav-button">
+                <i class="material-icons">apartment</i>
+                Properties
+            </button>
+            <button class="nav-button">
+                <i class="material-icons">calendar_today</i>
+                Bookings
+            </button>
+            <button class="nav-button">
+                <i class="material-icons">dashboard</i>
+                Dashboard
+            </button>
+            <button class="nav-button">
+                <i class="material-icons">login</i>
+                Login
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">Properties</h1>
+            <p class="page-subtitle">Find your perfect rental from our extensive collection</p>
+        </div>
+
+        <!-- Search/Filters Section -->
+        <div class="filters-section">
+            <div class="filters-grid">
+                <div class="form-group">
+                    <label class="form-label">Location</label>
+                    <input type="text" class="form-input" placeholder="Search by location...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Category</label>
+                    <select class="form-select">
+                        <option>All Categories</option>
+                        <option>Apartment</option>
+                        <option>House</option>
+                        <option>Villa</option>
+                        <option>Condo</option>
+                        <option>Studio</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Property Type</label>
+                    <select class="form-select">
+                        <option>All Types</option>
+                        <option>Entire Place</option>
+                        <option>Private Room</option>
+                        <option>Shared Room</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Min Price</label>
+                    <input type="number" class="form-input" placeholder="Min price">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Max Price</label>
+                    <input type="number" class="form-input" placeholder="Max price">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Guests</label>
+                    <input type="number" class="form-input" placeholder="Number of guests">
+                </div>
+            </div>
+            <button class="search-btn">
+                <i class="material-icons">search</i>
+                Search Properties
+            </button>
+        </div>
+
+        <!-- Properties Grid -->
+        <div class="properties-grid">
+            <!-- Property Card 1 -->
+            <div class="property-card">
+                <div class="property-image">
+                    <i class="material-icons" style="font-size: 48px;">image</i>
+                </div>
+                <div class="property-content">
+                    <h3 class="property-title">Luxury Beach Villa</h3>
+                    <div class="property-location">
+                        <i class="material-icons" style="font-size: 16px;">location_on</i>
+                        Miami, FL
+                    </div>
+                    <div class="property-guests">
+                        <i class="material-icons" style="font-size: 16px;">people</i>
+                        8 guests • 4 bedrooms
+                    </div>
+                    <div class="property-rating">
+                        <i class="material-icons" style="font-size: 16px;">star</i>
+                        4.5 (18 reviews)
+                    </div>
+                    <div class="property-price">$250/night</div>
+                    <div class="property-actions">
+                        <button class="view-details-btn">View Details</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Property Card 2 -->
+            <div class="property-card">
+                <div class="property-image">
+                    <i class="material-icons" style="font-size: 48px;">image</i>
+                </div>
+                <div class="property-content">
+                    <h3 class="property-title">Modern Downtown Apartment</h3>
+                    <div class="property-location">
+                        <i class="material-icons" style="font-size: 16px;">location_on</i>
+                        New York, NY
+                    </div>
+                    <div class="property-guests">
+                        <i class="material-icons" style="font-size: 16px;">people</i>
+                        4 guests • 2 bedrooms
+                    </div>
+                    <div class="property-rating">
+                        <i class="material-icons" style="font-size: 16px;">star</i>
+                        4.8 (8 reviews)
+                    </div>
+                    <div class="property-price">$150/night</div>
+                    <div class="property-actions">
+                        <button class="view-details-btn">View Details</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Property Card 3 -->
+            <div class="property-card">
+                <div class="property-image">
+                    <i class="material-icons" style="font-size: 48px;">image</i>
+                </div>
+                <div class="property-content">
+                    <h3 class="property-title">Cozy Mountain Cabin</h3>
+                    <div class="property-location">
+                        <i class="material-icons" style="font-size: 16px;">location_on</i>
+                        Denver, CO
+                    </div>
+                    <div class="property-guests">
+                        <i class="material-icons" style="font-size: 16px;">people</i>
+                        6 guests • 3 bedrooms
+                    </div>
+                    <div class="property-rating">
+                        <i class="material-icons" style="font-size: 16px;">star</i>
+                        4.7 (12 reviews)
+                    </div>
+                    <div class="property-price">$180/night</div>
+                    <div class="property-actions">
+                        <button class="view-details-btn">View Details</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Property Card 4 -->
+            <div class="property-card">
+                <div class="property-image">
+                    <i class="material-icons" style="font-size: 48px;">image</i>
+                </div>
+                <div class="property-content">
+                    <h3 class="property-title">Beachfront Condo</h3>
+                    <div class="property-location">
+                        <i class="material-icons" style="font-size: 16px;">location_on</i>
+                        San Diego, CA
+                    </div>
+                    <div class="property-guests">
+                        <i class="material-icons" style="font-size: 16px;">people</i>
+                        2 guests • 1 bedroom
+                    </div>
+                    <div class="property-rating">
+                        <i class="material-icons" style="font-size: 16px;">star</i>
+                        4.9 (25 reviews)
+                    </div>
+                    <div class="property-price">$120/night</div>
+                    <div class="property-actions">
+                        <button class="view-details-btn">View Details</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Property Card 5 -->
+            <div class="property-card">
+                <div class="property-image">
+                    <i class="material-icons" style="font-size: 48px;">image</i>
+                </div>
+                <div class="property-content">
+                    <h3 class="property-title">Historic Townhouse</h3>
+                    <div class="property-location">
+                        <i class="material-icons" style="font-size: 16px;">location_on</i>
+                        Boston, MA
+                    </div>
+                    <div class="property-guests">
+                        <i class="material-icons" style="font-size: 16px;">people</i>
+                        6 guests • 3 bedrooms
+                    </div>
+                    <div class="property-rating">
+                        <i class="material-icons" style="font-size: 16px;">star</i>
+                        4.6 (15 reviews)
+                    </div>
+                    <div class="property-price">$200/night</div>
+                    <div class="property-actions">
+                        <button class="view-details-btn">View Details</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Property Card 6 -->
+            <div class="property-card">
+                <div class="property-image">
+                    <i class="material-icons" style="font-size: 48px;">image</i>
+                </div>
+                <div class="property-content">
+                    <h3 class="property-title">Desert Oasis Villa</h3>
+                    <div class="property-location">
+                        <i class="material-icons" style="font-size: 16px;">location_on</i>
+                        Phoenix, AZ
+                    </div>
+                    <div class="property-guests">
+                        <i class="material-icons" style="font-size: 16px;">people</i>
+                        10 guests • 5 bedrooms
+                    </div>
+                    <div class="property-rating">
+                        <i class="material-icons" style="font-size: 16px;">star</i>
+                        4.4 (9 reviews)
+                    </div>
+                    <div class="property-price">$300/night</div>
+                    <div class="property-actions">
+                        <button class="view-details-btn">View Details</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination">
+            <button class="pagination-btn">Previous</button>
+            <button class="pagination-btn active">1</button>
+            <button class="pagination-btn">2</button>
+            <button class="pagination-btn">3</button>
+            <button class="pagination-btn">Next</button>
+        </div>
+    </div>
+</body>
+</html>

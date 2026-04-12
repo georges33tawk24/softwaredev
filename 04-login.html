@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Rentora</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Roboto', sans-serif; background: #fafafa; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+        
+        /* Auth Container */
+        .auth-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 24px;
+        }
+        
+        /* Auth Card */
+        .auth-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+            padding: 32px;
+        }
+        
+        /* Logo Section */
+        .logo {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .logo h1 {
+            color: #1976d2;
+            font-size: 32px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        
+        /* Form Title */
+        .form-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            color: #212121;
+            text-align: center;           
+
+        }
+        
+        /* Form Groups */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+            font-size: 14px;
+        }
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: 'Roboto', sans-serif;
+            background: #fafafa;
+            transition: all 0.2s;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: #1976d2;
+            background: white;
+            box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1);
+        }
+        .form-input::placeholder {
+            color: #999;
+        }
+        
+        /* Checkbox */
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+        .checkbox-input {
+            width: auto;
+            margin: 0;
+        }
+        .checkbox-label {
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+        }
+        
+        /* Submit Button */
+        .btn-submit {
+            width: 100%;
+            background: #1976d2;
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transition: all 0.2s;
+            margin-bottom: 16px;
+        }
+        .btn-submit:hover {
+            background: #1565c0;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.25);
+        }
+        
+        /* Divider */
+        .divider {
+            text-align: center;
+            margin: 24px 0;
+            color: #666;
+            font-size: 14px;
+            position: relative;
+        }
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #e0e0e0;
+            z-index: 1;
+        }
+        .divider span {
+            background: white;
+            padding: 0 16px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        /* Links */
+        .auth-links {
+            text-align: center;
+        }
+        .auth-link {
+            color: #1976d2;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+        .auth-link:hover {
+            color: #1565c0;
+            text-decoration: underline;
+        }
+        
+        /* Social Login */
+        .social-login {
+            margin-top: 24px;
+        }
+        .social-btn {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 12px;
+            transition: all 0.2s;
+        }
+        .social-btn:hover {
+            background: #f5f5f5;
+            border-color: #1976d2;
+        }
+        .social-btn.google {
+            color: #4285f4;
+        }
+        .social-btn.facebook {
+            color: #1877f2;
+        }
+        
+        /* Error Message */
+        .error-message {
+            background: #ffebee;
+            color: #c62828;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            display: none;
+        }
+        
+        /* Success Message */
+        .success-message {
+            background: #e8f5e8;
+            color: #2e7d32;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <!-- Logo -->
+            <div class="logo">
+                <h1>
+                    <i class="material-icons">apartment</i>
+                    Rentora
+                </h1>
+            </div>
+
+            <!-- Form Title -->
+            <h2 class="form-title">Sign In</h2>
+
+            <!-- Error/Success Messages -->
+            <div class="error-message">Invalid email or password</div>
+            <div class="success-message">Login successful! Redirecting...</div>
+
+            <!-- Login Form -->
+            <form id="loginForm">
+                <div class="form-group">
+                    <label class="form-label" for="email">Email Address</label>
+                    <input type="email" id="email" class="form-input" placeholder="Enter your email" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <input type="password" id="password" class="form-input" placeholder="Enter your password" required>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="remember" class="checkbox-input">
+                    <label for="remember" class="checkbox-label">Remember me</label>
+                </div>
+
+                <button type="submit" class="btn-submit">Sign In</button>
+            </form>
+
+            <!-- Divider -->
+            <div class="divider">
+                <span>OR</span>
+            </div>
+
+            <!-- Social Login -->
+            <div class="social-login">
+                <button class="social-btn google">
+                    <i class="material-icons">account_circle</i>
+                    Continue with Google
+                </button>
+                <button class="social-btn facebook">
+                    <i class="material-icons">facebook</i>
+                    Continue with Facebook
+                </button>
+            </div>
+
+            <!-- Auth Links -->
+            <div class="auth-links">
+                <p>Don't have an account? <a href="#" class="auth-link">Sign up</a></p>
+                <p><a href="#" class="auth-link">Forgot password?</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Form submission handler
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            // Basic validation
+            if (!email || !password) {
+                document.querySelector('.error-message').style.display = 'block';
+                document.querySelector('.error-message').textContent = 'Please fill in all fields';
+                return;
+            }
+            
+            // Simulate login (replace with actual authentication)
+            console.log('Login attempt:', { email, password });
+            
+            // Show success message
+            document.querySelector('.success-message').style.display = 'block';
+            document.querySelector('.error-message').style.display = 'none';
+            
+            // Redirect after 2 seconds (in real app)
+            setTimeout(() => {
+                console.log('Redirecting to dashboard...');
+            }, 2000);
+        });
+
+        // Social login handlers
+        document.querySelector('.social-btn.google').addEventListener('click', function() {
+            console.log('Google login clicked');
+        });
+
+        document.querySelector('.social-btn.facebook').addEventListener('click', function() {
+            console.log('Facebook login clicked');
+        });
+    </script>
+</body>
+</html>

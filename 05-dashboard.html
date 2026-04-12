@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Rentora</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Roboto', sans-serif; background: #fafafa; }
+        
+        /* Navigation */
+        .navbar {
+            background: #1976d2;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .navbar-brand {
+            font-size: 20px;
+            font-weight: 700;
+            margin-right: auto;
+            cursor: pointer;
+        }
+        .navbar-nav {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .nav-button {
+            background: none;
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-radius: 4px;
+            transition: background 0.2s;
+            font-size: 14px;
+            font-weight: 500;
+            text-transform: capitalize;
+        }
+        .nav-button:hover {
+            background: rgba(255,255,255,0.08);
+        }
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: white;
+            color: #1976d2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+        
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+        
+        /* Dashboard Header */
+        .dashboard-header {
+            margin-bottom: 32px;
+        }
+        .welcome-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #212121;
+            margin-bottom: 8px;
+        }
+        .welcome-subtitle {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+        .stat-icon.blue {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        .stat-icon.green {
+            background: #e8f5e8;
+            color: #4caf50;
+        }
+        .stat-icon.orange {
+            background: #fff3e0;
+            color: #ff9800;
+        }
+        .stat-icon.purple {
+            background: #f3e5f5;
+            color: #9c27b0;
+        }
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #212121;
+            margin-bottom: 8px;
+        }
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .stat-change {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 8px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .stat-change.positive {
+            background: #e8f5e8;
+            color: #4caf50;
+        }
+        .stat-change.negative {
+            background: #ffebee;
+            color: #f44336;
+        }
+        
+        /* Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+        }
+        
+        /* Recent Bookings */
+        .recent-bookings {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #212121;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .view-all-btn {
+            color: #1976d2;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .booking-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid #e0e0e0;
+            transition: background 0.2s;
+        }
+        .booking-item:hover {
+            background: #f5f5f5;
+            margin: 0 -16px;
+            padding: 16px;
+            border-radius: 8px;
+        }
+        .booking-item:last-child {
+            border-bottom: none;
+        }
+        .booking-info {
+            flex: 1;
+        }
+        .booking-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #212121;
+        }
+        .booking-details {
+            color: #666;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .booking-price {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1976d2;
+        }
+        .booking-status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+        .status-confirmed {
+            background: #e8f5e8;
+            color: #4caf50;
+        }
+        .status-pending {
+            background: #fff3e0;
+            color: #ff9800;
+        }
+        .status-completed {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        /* Quick Actions */
+        .quick-actions {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .action-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .action-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            color: #666;
+        }
+        .action-btn:hover {
+            border-color: #1976d2;
+            background: #f5f5f5;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .action-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+            color: #1976d2;
+        }
+        .action-label {
+            font-size: 14px;
+            font-weight: 500;
+            text-align: center;
+        }
+        
+        /* Notifications */
+        .notifications {
+            margin-top: 24px;
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .notification-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+        .notification-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .notification-icon.info {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        .notification-icon.success {
+            background: #e8f5e8;
+            color: #4caf50;
+        }
+        .notification-icon.warning {
+            background: #fff3e0;
+            color: #ff9800;
+        }
+        .notification-content {
+            flex: 1;
+        }
+        .notification-title {
+            font-weight: 500;
+            margin-bottom: 4px;
+            color: #212121;
+            font-size: 14px;
+        }
+        .notification-time {
+            color: #999;
+            font-size: 12px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar-nav {
+                display: none;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            .action-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-brand">Rentora</div>
+        <div class="navbar-nav">
+            <button class="nav-button">
+                <i class="material-icons">home</i>
+                Home
+            </button>
+            <button class="nav-button">
+                <i class="material-icons">apartment</i>
+                Properties
+            </button>
+            <button class="nav-button">
+                <i class="material-icons">calendar_today</i>
+                Bookings
+            </button>
+            <button class="nav-button">
+                <i class="material-icons">dashboard</i>
+                Dashboard
+            </button>
+            <div class="user-menu">
+                <div class="user-avatar">JD</div>
+                <span>John Doe</span>
+                <i class="material-icons">arrow_drop_down</i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Dashboard Header -->
+        <div class="dashboard-header">
+            <h1 class="welcome-title">Welcome back, John!</h1>
+            <p class="welcome-subtitle">Here's what's happening with your rentals today</p>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon blue">
+                    <i class="material-icons">calendar_today</i>
+                </div>
+                <div class="stat-value">12</div>
+                <div class="stat-label">Total Bookings</div>
+                <div class="stat-change positive">
+                    <i class="material-icons" style="font-size: 14px;">trending_up</i>
+                    +2 this month
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon green">
+                    <i class="material-icons">attach_money</i>
+                </div>
+                <div class="stat-value">$3,450</div>
+                <div class="stat-label">Total Spent</div>
+                <div class="stat-change positive">
+                    <i class="material-icons" style="font-size: 14px;">trending_up</i>
+                    +12% this month
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon orange">
+                    <i class="material-icons">star</i>
+                </div>
+                <div class="stat-value">4.8</div>
+                <div class="stat-label">Average Rating</div>
+                <div class="stat-change positive">
+                    <i class="material-icons" style="font-size: 14px;">trending_up</i>
+                    +0.2 this month
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon purple">
+                    <i class="material-icons">visibility</i>
+                </div>
+                <div class="stat-value">28</div>
+                <div class="stat-label">Properties Viewed</div>
+                <div class="stat-change negative">
+                    <i class="material-icons" style="font-size: 14px;">trending_down</i>
+                    -5 this month
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Grid -->
+        <div class="content-grid">
+            <!-- Recent Bookings -->
+            <div class="recent-bookings">
+                <div class="section-title">
+                    Recent Bookings
+                    <a href="#" class="view-all-btn">
+                        View All
+                        <i class="material-icons" style="font-size: 16px;">arrow_forward</i>
+                    </a>
+                </div>
+
+                <div class="booking-item">
+                    <div class="booking-info">
+                        <div class="booking-title">Luxury Beach Villa</div>
+                        <div class="booking-details">
+                            <i class="material-icons" style="font-size: 14px;">location_on</i>
+                            Miami, FL • Dec 15-20, 2023
+                        </div>
+                        <div class="booking-status status-confirmed">Confirmed</div>
+                    </div>
+                    <div class="booking-price">$1,250</div>
+                </div>
+
+                <div class="booking-item">
+                    <div class="booking-info">
+                        <div class="booking-title">Modern Downtown Apartment</div>
+                        <div class="booking-details">
+                            <i class="material-icons" style="font-size: 14px;">location_on</i>
+                            New York, NY • Jan 5-7, 2024
+                        </div>
+                        <div class="booking-status status-pending">Pending</div>
+                    </div>
+                    <div class="booking-price">$600</div>
+                </div>
+
+                <div class="booking-item">
+                    <div class="booking-info">
+                        <div class="booking-title">Cozy Mountain Cabin</div>
+                        <div class="booking-details">
+                            <i class="material-icons" style="font-size: 14px;">location_on</i>
+                            Denver, CO • Nov 20-25, 2023
+                        </div>
+                        <div class="booking-status status-completed">Completed</div>
+                    </div>
+                    <div class="booking-price">$900</div>
+                </div>
+
+                <div class="booking-item">
+                    <div class="booking-info">
+                        <div class="booking-title">Beachfront Condo</div>
+                        <div class="booking-details">
+                            <i class="material-icons" style="font-size: 14px;">location_on</i>
+                            San Diego, CA • Oct 10-15, 2023
+                        </div>
+                        <div class="booking-status status-completed">Completed</div>
+                    </div>
+                    <div class="booking-price">$600</div>
+                </div>
+            </div>
+
+            <!-- Quick Actions & Notifications -->
+            <div>
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <div class="section-title">Quick Actions</div>
+                    <div class="action-grid">
+                        <a href="#" class="action-btn">
+                            <i class="material-icons action-icon">search</i>
+                            <span class="action-label">Browse Properties</span>
+                        </a>
+                        <a href="#" class="action-btn">
+                            <i class="material-icons action-icon">calendar_today</i>
+                            <span class="action-label">New Booking</span>
+                        </a>
+                        <a href="#" class="action-btn">
+                            <i class="material-icons action-icon">star</i>
+                            <span class="action-label">Write Review</span>
+                        </a>
+                        <a href="#" class="action-btn">
+                            <i class="material-icons action-icon">account_circle</i>
+                            <span class="action-label">Edit Profile</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Notifications -->
+                <div class="notifications">
+                    <div class="section-title">Notifications</div>
+                    
+                    <div class="notification-item">
+                        <div class="notification-icon success">
+                            <i class="material-icons" style="font-size: 16px;">check</i>
+                        </div>
+                        <div class="notification-content">
+                            <div class="notification-title">Booking confirmed</div>
+                            <div class="notification-time">2 hours ago</div>
+                        </div>
+                    </div>
+
+                    <div class="notification-item">
+                        <div class="notification-icon info">
+                            <i class="material-icons" style="font-size: 16px;">info</i>
+                        </div>
+                        <div class="notification-content">
+                            <div class="notification-title">New property matches your search</div>
+                            <div class="notification-time">5 hours ago</div>
+                        </div>
+                    </div>
+
+                    <div class="notification-item">
+                        <div class="notification-icon warning">
+                            <i class="material-icons" style="font-size: 16px;">warning</i>
+                        </div>
+                        <div class="notification-content">
+                            <div class="notification-title">Check-in reminder for tomorrow</div>
+                            <div class="notification-time">1 day ago</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

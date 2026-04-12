@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Rentora</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Roboto', sans-serif; background: #fafafa; }
+        
+        /* Navigation */
+        .navbar {
+            background: #1976d2;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .navbar-brand {
+            font-size: 20px;
+            font-weight: 700;
+            margin-right: auto;
+            cursor: pointer;
+        }
+        .navbar-nav {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .nav-button {
+            background: none;
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-radius: 4px;
+            transition: background 0.2s;
+            font-size: 14px;
+            font-weight: 500;
+            text-transform: capitalize;
+        }
+        .nav-button:hover {
+            background: rgba(255,255,255,0.08);
+        }
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: white;
+            color: #1976d2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+        
+        /* Admin Layout */
+        .admin-layout {
+            display: flex;
+            min-height: calc(100vh - 64px);
+        }
+        
+        /* Sidebar */
+        .admin-sidebar {
+            width: 260px;
+            background: #1976d2;
+            color: white;
+            padding: 24px 0;
+            box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+        }
+        .sidebar-header {
+            padding: 0 24px 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 24px;
+        }
+        .sidebar-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .sidebar-subtitle {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        .admin-nav {
+            display: flex;
+            flex-direction: column;
+        }
+        .admin-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 24px;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .admin-nav-item:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        .admin-nav-item.active {
+            background: rgba(255,255,255,0.15);
+            border-left: 4px solid white;
+        }
+        .admin-nav-item i {
+            font-size: 20px;
+        }
+        
+        /* Main Content */
+        .admin-content {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+        }
+        
+        /* Content Header */
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #212121;
+        }
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+        .btn-primary {
+            background: #1976d2;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transition: all 0.2s;
+        }
+        .btn-primary:hover {
+            background: #1565c0;
+            transform: translateY(-1px);
+        }
+        .btn-secondary {
+            background: white;
+            color: #666;
+            border: 1px solid #e0e0e0;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        .btn-secondary:hover {
+            background: #f5f5f5;
+            border-color: #1976d2;
+        }
+        
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .stat-icon.blue { background: #e3f2fd; color: #1976d2; }
+        .stat-icon.green { background: #e8f5e8; color: #4caf50; }
+        .stat-icon.orange { background: #fff3e0; color: #ff9800; }
+        .stat-icon.red { background: #ffebee; color: #f44336; }
+        .stat-icon.purple { background: #f3e5f5; color: #9c27b0; }
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #212121;
+            margin-bottom: 8px;
+        }
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .stat-change {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 8px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .stat-change.positive {
+            background: #e8f5e8;
+            color: #4caf50;
+        }
+        .stat-change.negative {
+            background: #ffebee;
+            color: #f44336;
+        }
+        
+        /* Data Table */
+        .data-table-container {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 32px;
+        }
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        .table-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #212121;
+        }
+        .table-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        .search-input {
+            padding: 8px 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Roboto', sans-serif;
+            background: #fafafa;
+            min-width: 200px;
+        }
+        .search-input:focus {
+            outline: none;
+            border-color: #1976d2;
+            background: white;
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .data-table th {
+            background: #f5f5f5;
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        .data-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 14px;
+            color: #666;
+        }
+        .data-table tr:hover {
+            background: #f5f5f5;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .status-active {
+            background: #e8f5e8;
+            color: #4caf50;
+        }
+        .status-pending {
+            background: #fff3e0;
+            color: #ff9800;
+        }
+        .status-inactive {
+            background: #ffebee;
+            color: #f44336;
+        }
+        .table-actions {
+            display: flex;
+            gap: 8px;
+        }
+        .action-btn {
+            background: none;
+            border: none;
+            padding: 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            color: #666;
+            transition: all 0.2s;
+        }
+        .action-btn:hover {
+            background: #f5f5f5;
+            color: #1976d2;
+        }
+        
+        /* Charts Section */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        .chart-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .chart-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            color: #212121;
+        }
+        .chart-placeholder {
+            height: 300px;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .admin-layout {
+                flex-direction: column;
+            }
+            .admin-sidebar {
+                width: 100%;
+                padding: 16px 0;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            .content-header {
+                flex-direction: column;
+                gap: 16px;
+                align-items: flex-start;
+            }
+            .table-actions {
+                flex-direction: column;
+                gap: 8px;
+            }
+            .search-input {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-brand">Rentora Admin</div>
+        <div class="navbar-nav">
+            <button class="nav-button">
+                <i class="material-icons">dashboard</i>
+                Dashboard
+            </button>
+            <button class="nav-button">
+                <i class="material-icons">apartment</i>
+                Properties
+            </button>
+            <button class="nav-button">
+                <i class="material-icons">people</i>
+                Users
+            </button>
+            <button class="nav-button">
+                <i class="material-icons">calendar_today</i>
+                Bookings
+            </button>
+            <div class="user-menu">
+                <div class="user-avatar">AD</div>
+                <span>Admin User</span>
+                <i class="material-icons">arrow_drop_down</i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Admin Layout -->
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <div class="admin-sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-title">Admin Panel</div>
+                <div class="sidebar-subtitle">Management System</div>
+            </div>
+            <nav class="admin-nav">
+                <div class="admin-nav-item active">
+                    <i class="material-icons">dashboard</i>
+                    <span>Dashboard</span>
+                </div>
+                <div class="admin-nav-item">
+                    <i class="material-icons">apartment</i>
+                    <span>Properties</span>
+                </div>
+                <div class="admin-nav-item">
+                    <i class="material-icons">people</i>
+                    <span>Users</span>
+                </div>
+                <div class="admin-nav-item">
+                    <i class="material-icons">calendar_today</i>
+                    <span>Bookings</span>
+                </div>
+                <div class="admin-nav-item">
+                    <i class="material-icons">payments</i>
+                    <span>Payments</span>
+                </div>
+                <div class="admin-nav-item">
+                    <i class="material-icons">star</i>
+                    <span>Reviews</span>
+                </div>
+                <div class="admin-nav-item">
+                    <i class="material-icons">assessment</i>
+                    <span>Analytics</span>
+                </div>
+                <div class="admin-nav-item">
+                    <i class="material-icons">settings</i>
+                    <span>Settings</span>
+                </div>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="admin-content">
+            <!-- Content Header -->
+            <div class="content-header">
+                <h1 class="page-title">Dashboard Overview</h1>
+                <div class="header-actions">
+                    <button class="btn-secondary">
+                        <i class="material-icons">download</i>
+                        Export Report
+                    </button>
+                    <button class="btn-primary">
+                        <i class="material-icons">add</i>
+                        Add Property
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon blue">
+                            <i class="material-icons" style="font-size: 24px;">apartment</i>
+                        </div>
+                    </div>
+                    <div class="stat-value">1,245</div>
+                    <div class="stat-label">Total Properties</div>
+                    <div class="stat-change positive">
+                        <i class="material-icons" style="font-size: 14px;">trending_up</i>
+                        +12% this month
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon green">
+                            <i class="material-icons" style="font-size: 24px;">people</i>
+                        </div>
+                    </div>
+                    <div class="stat-value">8,432</div>
+                    <div class="stat-label">Total Users</div>
+                    <div class="stat-change positive">
+                        <i class="material-icons" style="font-size: 14px;">trending_up</i>
+                        +8% this month
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon orange">
+                            <i class="material-icons" style="font-size: 24px;">calendar_today</i>
+                        </div>
+                    </div>
+                    <div class="stat-value">3,678</div>
+                    <div class="stat-label">Total Bookings</div>
+                    <div class="stat-change positive">
+                        <i class="material-icons" style="font-size: 14px;">trending_up</i>
+                        +15% this month
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon red">
+                            <i class="material-icons" style="font-size: 24px;">attach_money</i>
+                        </div>
+                    </div>
+                    <div class="stat-value">$458,290</div>
+                    <div class="stat-label">Total Revenue</div>
+                    <div class="stat-change positive">
+                        <i class="material-icons" style="font-size: 14px;">trending_up</i>
+                        +22% this month
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon purple">
+                            <i class="material-icons" style="font-size: 24px;">support_agent</i>
+                        </div>
+                    </div>
+                    <div class="stat-value">142</div>
+                    <div class="stat-label">Support Tickets</div>
+                    <div class="stat-change negative">
+                        <i class="material-icons" style="font-size: 14px;">trending_down</i>
+                        -5% this month
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <h3 class="chart-title">Revenue Overview</h3>
+                    <div class="chart-placeholder">
+                        <i class="material-icons" style="font-size: 48px;">bar_chart</i>
+                        Revenue Chart Placeholder
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <h3 class="chart-title">Property Distribution</h3>
+                    <div class="chart-placeholder">
+                        <i class="material-icons" style="font-size: 48px;">pie_chart</i>
+                        Distribution Chart Placeholder
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Properties Table -->
+            <div class="data-table-container">
+                <div class="table-header">
+                    <h3 class="table-title">Recent Properties</h3>
+                    <div class="table-actions">
+                        <input type="text" class="search-input" placeholder="Search properties...">
+                        <button class="btn-secondary">
+                            <i class="material-icons">filter_list</i>
+                            Filter
+                        </button>
+                    </div>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Property</th>
+                            <th>Owner</th>
+                            <th>Price/Night</th>
+                            <th>Status</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <i class="material-icons" style="color: #1976d2;">apartment</i>
+                                    <span>Luxury Beach Villa</span>
+                                </div>
+                            </td>
+                            <td>John Doe</td>
+                            <td>$250</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                            <td>Dec 15, 2023</td>
+                            <td>
+                                <div class="table-actions">
+                                    <button class="action-btn">
+                                        <i class="material-icons">visibility</i>
+                                    </button>
+                                    <button class="action-btn">
+                                        <i class="material-icons">edit</i>
+                                    </button>
+                                    <button class="action-btn">
+                                        <i class="material-icons">delete</i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <i class="material-icons" style="color: #1976d2;">apartment</i>
+                                    <span>Modern Downtown Apartment</span>
+                                </div>
+                            </td>
+                            <td>Sarah Johnson</td>
+                            <td>$150</td>
+                            <td><span class="status-badge status-pending">Pending</span></td>
+                            <td>Dec 14, 2023</td>
+                            <td>
+                                <div class="table-actions">
+                                    <button class="action-btn">
+                                        <i class="material-icons">visibility</i>
+                                    </button>
+                                    <button class="action-btn">
+                                        <i class="material-icons">edit</i>
+                                    </button>
+                                    <button class="action-btn">
+                                        <i class="material-icons">delete</i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <i class="material-icons" style="color: #1976d2;">apartment</i>
+                                    <span>Cozy Mountain Cabin</span>
+                                </div>
+                            </td>
+                            <td>Mike Wilson</td>
+                            <td>$180</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                            <td>Dec 13, 2023</td>
+                            <td>
+                                <div class="table-actions">
+                                    <button class="action-btn">
+                                        <i class="material-icons">visibility</i>
+                                    </button>
+                                    <button class="action-btn">
+                                        <i class="material-icons">edit</i>
+                                    </button>
+                                    <button class="action-btn">
+                                        <i class="material-icons">delete</i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <i class="material-icons" style="color: #1976d2;">apartment</i>
+                                    <span>Beachfront Condo</span>
+                                </div>
+                            </td>
+                            <td>Emily Davis</td>
+                            <td>$120</td>
+                            <td><span class="status-badge status-inactive">Inactive</span></td>
+                            <td>Dec 12, 2023</td>
+                            <td>
+                                <div class="table-actions">
+                                    <button class="action-btn">
+                                        <i class="material-icons">visibility</i>
+                                    </button>
+                                    <button class="action-btn">
+                                        <i class="material-icons">edit</i>
+                                    </button>
+                                    <button class="action-btn">
+                                        <i class="material-icons">delete</i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

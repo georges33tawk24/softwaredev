@@ -1,0 +1,3 @@
+# Cloudflare Pages SPA routing
+/api/*  https://rental-platform-backend.onrender.com/api/:splat  200
+/*    /index.html   200

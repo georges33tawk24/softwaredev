@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Rentora</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Roboto', sans-serif; background: #fafafa; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+        
+        /* Auth Container */
+        .auth-container {
+            width: 100%;
+            max-width: 450px;
+            padding: 24px;
+        }
+        
+        /* Auth Card */
+        .auth-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+            padding: 32px;
+        }
+        
+        /* Logo Section */
+        .logo {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .logo h1 {
+            color: #1976d2;
+            font-size: 32px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        
+        /* Form Title */
+        .form-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            color: #212121;
+            text-align: center;
+        }
+        
+        /* Form Groups */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+            font-size: 14px;
+        }
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: 'Roboto', sans-serif;
+            background: #fafafa;
+            transition: all 0.2s;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: #1976d2;
+            background: white;
+            box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1);
+        }
+        .form-input::placeholder {
+            color: #999;
+        }
+        
+        /* Name Fields */
+        .name-fields {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        
+        /* Checkbox */
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+        .checkbox-input {
+            width: auto;
+            margin: 4px 0 0 0;
+        }
+        .checkbox-label {
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+            line-height: 1.4;
+        }
+        
+        /* Submit Button */
+        .btn-submit {
+            width: 100%;
+            background: #1976d2;
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transition: all 0.2s;
+            margin-bottom: 16px;
+        }
+        .btn-submit:hover {
+            background: #1565c0;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.25);
+        }
+        
+        /* Divider */
+        .divider {
+            text-align: center;
+            margin: 24px 0;
+            color: #666;
+            font-size: 14px;
+            position: relative;
+        }
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #e0e0e0;
+            z-index: 1;
+        }
+        .divider span {
+            background: white;
+            padding: 0 16px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        /* Links */
+        .auth-links {
+            text-align: center;
+        }
+        .auth-link {
+            color: #1976d2;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+        .auth-link:hover {
+            color: #1565c0;
+            text-decoration: underline;
+        }
+        
+        /* Social Login */
+        .social-login {
+            margin-top: 24px;
+        }
+        .social-btn {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 12px;
+            transition: all 0.2s;
+        }
+        .social-btn:hover {
+            background: #f5f5f5;
+            border-color: #1976d2;
+        }
+        .social-btn.google {
+            color: #4285f4;
+        }
+        .social-btn.facebook {
+            color: #1877f2;
+        }
+        
+        /* Error Message */
+        .error-message {
+            background: #ffebee;
+            color: #c62828;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            display: none;
+        }
+        
+        /* Success Message */
+        .success-message {
+            background: #e8f5e8;
+            color: #2e7d32;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            display: none;
+        }
+        
+        /* Password Strength */
+        .password-strength {
+            margin-top: 8px;
+            height: 4px;
+            background: #e0e0e0;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .strength-bar {
+            height: 100%;
+            transition: all 0.3s;
+            border-radius: 2px;
+        }
+        .strength-weak { background: #f44336; width: 33%; }
+        .strength-medium { background: #ff9800; width: 66%; }
+        .strength-strong { background: #4caf50; width: 100%; }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <!-- Logo -->
+            <div class="logo">
+                <h1>
+                    <i class="material-icons">apartment</i>
+                    Rentora
+                </h1>
+            </div>
+
+            <!-- Form Title -->
+            <h2 class="form-title">Create Account</h2>
+
+            <!-- Error/Success Messages -->
+            <div class="error-message">Please fill in all required fields</div>
+            <div class="success-message">Account created successfully!</div>
+
+            <!-- Signup Form -->
+            <form id="signupForm">
+                <!-- Name Fields -->
+                <div class="name-fields">
+                    <div class="form-group">
+                        <label class="form-label" for="firstName">First Name</label>
+                        <input type="text" id="firstName" class="form-input" placeholder="Enter your first name" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="lastName">Last Name</label>
+                        <input type="text" id="lastName" class="form-input" placeholder="Enter your last name" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="email">Email Address</label>
+                    <input type="email" id="email" class="form-input" placeholder="Enter your email" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="phone">Phone Number</label>
+                    <input type="tel" id="phone" class="form-input" placeholder="Enter your phone number">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <input type="password" id="password" class="form-input" placeholder="Create a password" required>
+                    <div class="password-strength">
+                        <div class="strength-bar" id="strengthBar"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" class="form-input" placeholder="Confirm your password" required>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="terms" class="checkbox-input" required>
+                    <label for="terms" class="checkbox-label">
+                        I agree to the Terms of Service and Privacy Policy
+                    </label>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="newsletter" class="checkbox-input">
+                    <label for="newsletter" class="checkbox-label">
+                        Send me updates about new properties and special offers
+                    </label>
+                </div>
+
+                <button type="submit" class="btn-submit">Create Account</button>
+            </form>
+
+            <!-- Divider -->
+            <div class="divider">
+                <span>OR</span>
+            </div>
+
+            <!-- Social Login -->
+            <div class="social-login">
+                <button class="social-btn google">
+                    <i class="material-icons">account_circle</i>
+                    Sign up with Google
+                </button>
+                <button class="social-btn facebook">
+                    <i class="material-icons">facebook</i>
+                    Sign up with Facebook
+                </button>
+            </div>
+
+            <!-- Auth Links -->
+            <div class="auth-links">
+                <p>Already have an account? <a href="#" class="auth-link">Sign in</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Form submission handler
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const terms = document.getElementById('terms').checked;
+            
+            // Validation
+            if (!firstName || !lastName || !email || !password || !confirmPassword) {
+                document.querySelector('.error-message').style.display = 'block';
+                document.querySelector('.error-message').textContent = 'Please fill in all required fields';
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                document.querySelector('.error-message').style.display = 'block';
+                document.querySelector('.error-message').textContent = 'Passwords do not match';
+                return;
+            }
+            
+            if (!terms) {
+                document.querySelector('.error-message').style.display = 'block';
+                document.querySelector('.error-message').textContent = 'Please accept the Terms of Service';
+                return;
+            }
+            
+            // Success
+            console.log('Signup attempt:', { firstName, lastName, email, password });
+            document.querySelector('.success-message').style.display = 'block';
+            document.querySelector('.error-message').style.display = 'none';
+            
+            setTimeout(() => {
+                console.log('Redirecting to dashboard...');
+            }, 2000);
+        });
+
+        // Password strength checker
+        document.getElementById('password').addEventListener('input', function() {
+            const password = this.value;
+            const strengthBar = document.getElementById('strengthBar');
+            
+            if (password.length < 6) {
+                strengthBar.className = 'strength-bar strength-weak';
+            } else if (password.length < 10) {
+                strengthBar.className = 'strength-bar strength-medium';
+            } else {
+                strengthBar.className = 'strength-bar strength-strong';
+            }
+        });
+
+        // Social login handlers
+        document.querySelector('.social-btn.google').addEventListener('click', function() {
+            console.log('Google signup clicked');
+        });
+
+        document.querySelector('.social-btn.facebook').addEventListener('click', function() {
+            console.log('Facebook signup clicked');
+        });
+    </script>
+</body>
+</html>
