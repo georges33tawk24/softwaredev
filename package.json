@@ -9,10 +9,11 @@
     "client": "cd client && npm start",
     "server": "nodemon server.js",
     "build": "cd client && npm run build",
-    "build:prod": "cd client && NODE_OPTIONS=--max-old-space-size=3072 REACT_APP_API_URL=/api npm run build",
+    "build:prod": "cd client && GENERATE_SOURCEMAP=false DISABLE_ESLINT_PLUGIN=true NODE_OPTIONS=--max-old-space-size=3072 REACT_APP_API_URL=/api npm run build",
     "render-build": "npm ci --no-audit --no-fund && cd client && npm ci --no-audit --no-fund && cd .. && npm run build:prod",
     "install-client": "cd client && npm install",
     "install-all": "npm install && npm run install-client",
+    "bootstrap": "node scripts/bootstrap-dev.cjs",
     "setup": "./setup.sh"
   },
   "keywords": [
