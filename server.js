@@ -1,9 +1,16 @@
+const path = require('path');
+const fs = require('fs');
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 require('dotenv').config();
+
+const clientBuildPath = path.join(__dirname, 'client', 'build');
+const serveClient =
+  process.env.NODE_ENV === 'production' &&
+  fs.existsSync(path.join(clientBuildPath, 'index.html'));
 
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
@@ -14,8 +21,8 @@ const paymentRoutes = require('./routes/payments');
 
 const app = express();
 
-// Security middleware
-app.use(helmet());
+// Security middleware (CRA static bundle conflicts with default CSP)
+app.use(serveClient ? helmet({ contentSecurityPolicy: false }) : helmet());
 
 // Rate limiting
 const limiter = rateLimit({
@@ -25,8 +32,35 @@ const limiter = rateLimit({
 app.use('/api/', limiter);
 
 // CORS configuration
+const allowedOrigins = [
+  process.env.FRONTEND_URL || 'http://localhost:3000',
+  process.env.RENDER_EXTERNAL_URL,
+  'http://127.0.0.1:3000',
+  'http://localhost:3001',
+  'http://127.0.0.1:3001',
+  'http://localhost:3010',
+  'http://127.0.0.1:3010',
+  'https://deft-souffle-fdbcfe.netlify.app',
+  'https://stellular-toffee-56e553.netlify.app'
+].filter(Boolean);
+
 app.use(cors({
-  origin: [process.env.FRONTEND_URL || 'http://localhost:3000', 'http://localhost:3001'],
+  origin: (origin, callback) => {
+    // Allow requests from non-browser clients (curl/postman/server-to-server)
+    if (!origin) {
+      return callback(null, true);
+    }
+
+    const isAllowed =
+      allowedOrigins.includes(origin) ||
+      /^https:\/\/[a-z0-9-]+\.netlify\.app$/i.test(origin);
+
+    if (isAllowed) {
+      return callback(null, true);
+    }
+
+    return callback(new Error('Not allowed by CORS'));
+  },
   credentials: true
 }));
 
@@ -38,12 +72,26 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static('uploads'));
 
 // Database connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/rental_platform', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/rental_platform', {
+  serverSelectionTimeoutMS: 5000
 })
 .then(() => console.log('MongoDB connected successfully'))
 .catch(err => console.error('MongoDB connection error:', err));
+
+// Fail fast when DB is unavailable instead of waiting for model timeouts
+app.use('/api', (req, res, next) => {
+  if (req.path === '/health') {
+    return next();
+  }
+
+  if (mongoose.connection.readyState !== 1) {
+    return res.status(503).json({
+      message: 'Database is unavailable. Please try again shortly.'
+    });
+  }
+
+  return next();
+});
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -53,27 +101,36 @@ app.use('/api/bookings', bookingRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/payments', paymentRoutes);
 
-// Welcome route
-app.get('/', (req, res) => {
-  res.json({
-    message: 'Welcome to Rental Platform API',
-    version: '1.0.0',
-    status: 'Server is running',
-    endpoints: {
-      auth: '/api/auth',
-      users: '/api/users',
-      properties: '/api/properties',
-      bookings: '/api/bookings',
-      admin: '/api/admin',
-      health: '/api/health'
-    }
-  });
-});
-
 // Health check endpoint
 app.get('/api/health', (req, res) => {
   res.status(200).json({ message: 'Server is running', timestamp: new Date().toISOString() });
 });
+
+if (serveClient) {
+  app.use(express.static(clientBuildPath));
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api')) {
+      return next();
+    }
+    res.sendFile(path.join(clientBuildPath, 'index.html'));
+  });
+} else {
+  app.get('/', (req, res) => {
+    res.json({
+      message: 'Welcome to Rental Platform API',
+      version: '1.0.0',
+      status: 'Server is running',
+      endpoints: {
+        auth: '/api/auth',
+        users: '/api/users',
+        properties: '/api/properties',
+        bookings: '/api/bookings',
+        admin: '/api/admin',
+        health: '/api/health'
+      }
+    });
+  });
+}
 
 // Error handling middleware
 app.use((err, req, res, next) => {

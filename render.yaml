@@ -1,18 +1,19 @@
+# Render Blueprint: New → Blueprint → connect this repo.
+# When prompted, set only MONGODB_URI and JWT_SECRET (Atlas + a random string).
 services:
   - type: web
-    name: rental-platform-backend
-    env: node
+    name: rental-platform
+    runtime: node
     plan: free
-    buildCommand: "npm install"
-    startCommand: "npm start"
+    branch: master
+    buildCommand: npm run install-all && npm run build:prod
+    startCommand: npm start
     envVars:
       - key: NODE_ENV
         value: production
+      - key: JWT_EXPIRE
+        value: 7d
       - key: MONGODB_URI
         sync: false
       - key: JWT_SECRET
         sync: false
-      - key: JWT_EXPIRE
-        value: 7d
-      - key: PORT
-        value: 5000
