@@ -3,6 +3,10 @@ const router = express.Router();
 const Property = require('../models/Property');
 const { protect } = require('../middleware/auth');
 
+function escapeRegex(text) {
+  return String(text).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 // Get all properties with filters
 router.get('/', async (req, res) => {
   try {
@@ -10,6 +14,7 @@ router.get('/', async (req, res) => {
       page = 1,
       limit = 12,
       location,
+      search,
       category,
       type,
       minPrice,
@@ -20,12 +25,17 @@ router.get('/', async (req, res) => {
     } = req.query;
 
     const filter = { status: 'active' };
-    
-    if (location) {
+
+    const searchTerm = (search || location || '').trim();
+    if (searchTerm) {
+      const rx = escapeRegex(searchTerm);
       filter.$or = [
-        { 'location.city': { $regex: location, $options: 'i' } },
-        { 'location.state': { $regex: location, $options: 'i' } },
-        { 'location.country': { $regex: location, $options: 'i' } }
+        { title: { $regex: rx, $options: 'i' } },
+        { description: { $regex: rx, $options: 'i' } },
+        { 'location.address': { $regex: rx, $options: 'i' } },
+        { 'location.city': { $regex: rx, $options: 'i' } },
+        { 'location.state': { $regex: rx, $options: 'i' } },
+        { 'location.country': { $regex: rx, $options: 'i' } }
       ];
     }
     
