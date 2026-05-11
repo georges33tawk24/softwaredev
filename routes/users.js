@@ -48,6 +48,40 @@ router.get('/', protect, authorize('admin', 'super_admin'), async (req, res) => 
   }
 });
 
+// @route   GET /api/users/stats
+// @desc    Get user statistics (admin only)
+router.get('/stats', protect, authorize('admin', 'super_admin'), async (req, res) => {
+  try {
+    const totalUsers = await User.countDocuments();
+    const verifiedUsers = await User.countDocuments({ isVerified: true });
+    const adminUsers = await User.countDocuments({ role: { $in: ['admin', 'super_admin'] } });
+    
+    const recentUsers = await User.find()
+      .sort({ createdAt: -1 })
+      .limit(5)
+      .select('firstName lastName email createdAt isVerified');
+
+    const usersByRole = await User.aggregate([
+      { $group: { _id: '$role', count: { $sum: 1 } } }
+    ]);
+
+    res.json({
+      success: true,
+      stats: {
+        totalUsers,
+        verifiedUsers,
+        adminUsers,
+        unverifiedUsers: totalUsers - verifiedUsers,
+        recentUsers,
+        usersByRole
+      }
+    });
+  } catch (error) {
+    console.error('Get user stats error:', error);
+    res.status(500).json({ message: 'Server error while fetching user statistics' });
+  }
+});
+
 // @route   GET /api/users/:id
 // @desc    Get user by ID
 router.get('/:id', protect, async (req, res) => {
@@ -114,6 +148,12 @@ router.put('/:id', protect, [
         updateData[key] = req.body[key];
       }
     });
+
+    if (updateData.role === 'super_admin' && req.user.role !== 'super_admin') {
+      return res.status(403).json({
+        message: 'Only a super admin can assign the super_admin role',
+      });
+    }
 
     const updatedUser = await User.findByIdAndUpdate(
       req.params.id,
@@ -269,40 +309,6 @@ router.delete('/:id/addresses/:addressId', protect, async (req, res) => {
   } catch (error) {
     console.error('Delete address error:', error);
     res.status(500).json({ message: 'Server error while deleting address' });
-  }
-});
-
-// @route   GET /api/users/stats
-// @desc    Get user statistics (admin only)
-router.get('/stats', protect, authorize('admin', 'super_admin'), async (req, res) => {
-  try {
-    const totalUsers = await User.countDocuments();
-    const verifiedUsers = await User.countDocuments({ isVerified: true });
-    const adminUsers = await User.countDocuments({ role: { $in: ['admin', 'super_admin'] } });
-    
-    const recentUsers = await User.find()
-      .sort({ createdAt: -1 })
-      .limit(5)
-      .select('firstName lastName email createdAt isVerified');
-
-    const usersByRole = await User.aggregate([
-      { $group: { _id: '$role', count: { $sum: 1 } } }
-    ]);
-
-    res.json({
-      success: true,
-      stats: {
-        totalUsers,
-        verifiedUsers,
-        adminUsers,
-        unverifiedUsers: totalUsers - verifiedUsers,
-        recentUsers,
-        usersByRole
-      }
-    });
-  } catch (error) {
-    console.error('Get user stats error:', error);
-    res.status(500).json({ message: 'Server error while fetching user statistics' });
   }
 });
 
