@@ -14,6 +14,7 @@
     "install-client": "cd client && npm install",
     "install-all": "npm install && npm run install-client",
     "bootstrap": "node scripts/bootstrap-dev.cjs",
+    "seed": "node seed-properties.js",
     "setup": "./setup.sh"
   },
   "keywords": [
