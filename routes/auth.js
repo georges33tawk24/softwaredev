@@ -54,17 +54,17 @@ router.post('/register', [
     // Generate token
     const token = generateToken(user._id);
 
-    // Send verification email
-    try {
-      await emailService.sendVerificationEmail(user, verificationToken);
-    } catch (emailError) {
-      console.error('Failed to send verification email:', emailError);
-    }
-
     res.status(201).json({
       success: true,
       token,
       user: user.getPublicProfile()
+    });
+
+    // Do not block registration on SMTP (missing/invalid Gmail creds hang for minutes otherwise)
+    setImmediate(() => {
+      emailService.sendVerificationEmail(user, verificationToken).catch((emailError) => {
+        console.error('Failed to send verification email:', emailError.message || emailError);
+      });
     });
   } catch (error) {
     console.error('Registration error:', error);
