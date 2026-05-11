@@ -71,12 +71,22 @@ app.use(express.urlencoded({ extended: true }));
 // Static files
 app.use('/uploads', express.static('uploads'));
 
-// Database connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/rental_platform', {
-  serverSelectionTimeoutMS: 5000
-})
-.then(() => console.log('MongoDB connected successfully'))
-.catch(err => console.error('MongoDB connection error:', err));
+// Database connection (retry if Mongo starts after the API — common in local dev)
+const mongoUri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/rental_platform';
+const mongoOptions = { serverSelectionTimeoutMS: 5000 };
+
+function connectMongo() {
+  mongoose
+    .connect(mongoUri, mongoOptions)
+    .then(() => console.log('MongoDB connected successfully'))
+    .catch((err) => {
+      console.error('MongoDB connection error:', err.message);
+      console.error('Retrying MongoDB connection in 3s…');
+      setTimeout(connectMongo, 3000);
+    });
+}
+
+connectMongo();
 
 // Fail fast when DB is unavailable instead of waiting for model timeouts
 app.use('/api', (req, res, next) => {

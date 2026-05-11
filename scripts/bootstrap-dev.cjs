@@ -50,4 +50,7 @@ ensureClientEnv(port);
 console.log('Bootstrap: npm install (root + client)…');
 execSync('npm run install-all', { cwd: root, stdio: 'inherit' });
 
-console.log('\nDone. Next: edit root .env (MONGODB_URI, JWT_SECRET), then run: npm run dev');
+console.log(
+  '\nDone. Next: edit root .env (MONGODB_URI, JWT_SECRET); start Mongo locally or use Atlas URI.\n' +
+    'Then run: npm run dev'
+);
