@@ -15,6 +15,7 @@ router.get('/', protect, async (req, res) => {
 
     const bookings = await Booking.find(filter)
       .populate('property', 'title images location pricing')
+      .populate('guest', 'firstName lastName email phone')
       .populate('owner', 'firstName lastName email phone')
       .sort({ createdAt: -1 })
       .skip(skip)
