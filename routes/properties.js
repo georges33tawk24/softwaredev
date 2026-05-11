@@ -115,7 +115,7 @@ router.post('/', protect, async (req, res) => {
   }
 });
 
-// Update property
+// Update property (partial merge — avoids wiping nested docs when admin edits a few fields)
 router.put('/:id', protect, async (req, res) => {
   try {
     const property = await Property.findById(req.params.id);
@@ -124,21 +124,77 @@ router.put('/:id', protect, async (req, res) => {
       return res.status(404).json({ message: 'Property not found' });
     }
 
-    // Check if user owns the property or is admin
-    if (property.owner.toString() !== req.user._id.toString() && 
+    if (property.owner.toString() !== req.user._id.toString() &&
         !['admin', 'super_admin'].includes(req.user.role)) {
       return res.status(403).json({ message: 'Access denied' });
     }
 
+    const $set = {};
+    const b = req.body;
+
+    if (b.title !== undefined) $set.title = b.title;
+    if (b.description !== undefined) $set.description = b.description;
+    if (b.category !== undefined) $set.category = b.category;
+    if (b.type !== undefined) $set.type = b.type;
+    if (b.status !== undefined) $set.status = b.status;
+    if (b.featured !== undefined) $set.featured = b.featured;
+    if (b.verified !== undefined) $set.verified = b.verified;
+    if (b.amenities !== undefined) $set.amenities = b.amenities;
+
+    if (b.location && typeof b.location === 'object') {
+      const loc = b.location;
+      if (loc.address !== undefined) $set['location.address'] = loc.address;
+      if (loc.city !== undefined) $set['location.city'] = loc.city;
+      if (loc.state !== undefined) $set['location.state'] = loc.state;
+      if (loc.zipCode !== undefined) $set['location.zipCode'] = loc.zipCode;
+      if (loc.country !== undefined) $set['location.country'] = loc.country;
+      if (loc.coordinates !== undefined) $set['location.coordinates'] = loc.coordinates;
+    }
+
+    if (b.pricing && typeof b.pricing === 'object') {
+      const p = b.pricing;
+      if (p.nightly !== undefined) $set['pricing.nightly'] = Number(p.nightly);
+      if (p.weekly !== undefined) $set['pricing.weekly'] = p.weekly;
+      if (p.monthly !== undefined) $set['pricing.monthly'] = p.monthly;
+      if (p.currency !== undefined) $set['pricing.currency'] = p.currency;
+      if (p.cleaningFee !== undefined) $set['pricing.cleaningFee'] = p.cleaningFee;
+      if (p.serviceFee !== undefined) $set['pricing.serviceFee'] = p.serviceFee;
+      if (p.securityDeposit !== undefined) $set['pricing.securityDeposit'] = p.securityDeposit;
+    }
+
+    if (b.capacity && typeof b.capacity === 'object') {
+      const c = b.capacity;
+      if (c.guests !== undefined) $set['capacity.guests'] = c.guests;
+      if (c.bedrooms !== undefined) $set['capacity.bedrooms'] = c.bedrooms;
+      if (c.beds !== undefined) $set['capacity.beds'] = c.beds;
+      if (c.bathrooms !== undefined) $set['capacity.bathrooms'] = c.bathrooms;
+    }
+
+    if (b.availability && typeof b.availability === 'object') {
+      Object.keys(b.availability).forEach((k) => {
+        $set[`availability.${k}`] = b.availability[k];
+      });
+    }
+
+    if (b.policies && typeof b.policies === 'object') {
+      Object.keys(b.policies).forEach((k) => {
+        $set[`policies.${k}`] = b.policies[k];
+      });
+    }
+
+    if (Object.keys($set).length === 0) {
+      return res.status(400).json({ message: 'No valid fields to update' });
+    }
+
     const updatedProperty = await Property.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      { $set },
       { new: true, runValidators: true }
-    );
+    ).populate('owner', 'firstName lastName email');
 
     res.json({
       success: true,
-      data: updatedProperty
+      data: updatedProperty,
     });
   } catch (error) {
     console.error('Update property error:', error);
